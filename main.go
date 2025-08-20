@@ -7,10 +7,13 @@ import (
 	"image"
 	"image/color"
 	"image/png"
+	"log"
+	"os"
 	"strings"
 	"sync"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/makeworld-the-better-one/dither/v2"
 	"github.com/mect/go-escpos"
 )
@@ -19,8 +22,18 @@ import (
 var printerMutex sync.Mutex
 
 func main() {
+
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
 	// printer setup
-	p, err := escpos.NewUSBPrinterByPath("")
+	printerPath, found := os.LookupEnv("PRINTER_PATH")
+	if !found {
+		printerPath = ""
+	}
+	p, err := escpos.NewUSBPrinterByPath(printerPath)
 	if err != nil {
 		fmt.Println("No Printa Found!!")
 		fmt.Println("Failed to connect to printer:", err)
@@ -29,6 +42,9 @@ func main() {
 	p.Init()
 	p.Smooth(true)
 
+	if os.Getenv("GIN_MODE") == "release" {
+		gin.SetMode(gin.ReleaseMode)
+	}
 	router := gin.Default()
 	router.Use(func(c *gin.Context) {
 		c.Set("printer", p)
@@ -37,7 +53,8 @@ func main() {
 
 	router.POST("/print", handlePrint)
 
-	router.Run(":5010") // listen and serve on 0.0.0.0:3000
+	fmt.Printf("Listening and serving on 0.0.0.0:%s\n", os.Getenv("PORT"))
+	router.Run() // listen and serve on 0.0.0.0:8080 (or whatever is set as PORT environment variable)
 }
 
 func handlePrint(c *gin.Context) {

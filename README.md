@@ -24,7 +24,20 @@ git clone https://github.com/codaea/simpleprint.git
 cd simpleprint
 go mod download
 go build -o simpleprint
+
 ```
+
+### Configuration
+SimplePrint uses environment variables for configuration. You can set these in a .env file in the project root.
+
+| Variable      | Default   | Description                                      |
+|---------------|-----------|--------------------------------------------------|
+| `GIN_MODE`    | release   | Gin server mode (`release` or `debug`)           |
+| `PORT`        | 3000      | Port for the HTTP server                         |
+| `PRINTER_PATH`| (empty)   | USB path to the printer (optional, Linux only)   |
+
+Copy `.env.sample` to `.env` and adjust as needed.
+
 
 ### Run the Server
 
