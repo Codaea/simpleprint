@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/makeworld-the-better-one/dither/v2"
@@ -41,6 +42,7 @@ func main() {
 		gin.SetMode(gin.ReleaseMode)
 	}
 	router := gin.Default()
+	router.Use(cors.Default())
 	router.Use(func(c *gin.Context) {
 		c.Set("printer", p)
 		c.Next()
