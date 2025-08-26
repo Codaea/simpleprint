@@ -78,7 +78,7 @@ func (pr *PrintRequest) UnmarshalJSON(data []byte) error {
 			if err := json.Unmarshal(itemData, &feed); err != nil {
 				return fmt.Errorf("error unmarshaling feed: %v", err)
 			}
-			pr.Receipt[i] = feed // Just assign the feed directly
+			pr.Receipt[i] = feed
 		default:
 			return fmt.Errorf("unknown receipt item type: %s", typeExtractor.Type)
 		}
@@ -86,16 +86,6 @@ func (pr *PrintRequest) UnmarshalJSON(data []byte) error {
 
 	return nil
 }
-
-// All receipt item types implement ReceiptItem
-var (
-	_ ReceiptItem = (*Line)(nil)
-	_ ReceiptItem = (*Barcode)(nil)
-	_ ReceiptItem = (*QRCode)(nil)
-	_ ReceiptItem = (*Image)(nil)
-	_ ReceiptItem = (*Text)(nil)
-	_ ReceiptItem = (*Feed)(nil)
-)
 
 type FontType string
 
@@ -128,6 +118,19 @@ func (a *AlignmentType) UnmarshalJSON(data []byte) error {
 	}
 }
 
+func (a AlignmentType) ToEscposAlignment() escpos.Alignment {
+	switch a {
+	case AlignLeft:
+		return escpos.AlignLeft
+	case AlignRight:
+		return escpos.AlignRight
+	case AlignCenter:
+		return escpos.AlignCenter
+	default:
+		return escpos.AlignLeft // default
+	}
+}
+
 type BarcodeType string
 
 const (
@@ -152,6 +155,30 @@ func (b *BarcodeType) UnmarshalJSON(data []byte) error {
 	default:
 		return fmt.Errorf("invalid barcode type: %s", s)
 	}
+}
+
+// this gets called by the handler when converting to ESC/POS so it uses that packages types
+func (t BarcodeType) ToEscposBarcodeType() escpos.BarcodeType {
+	switch t {
+	case "CODABAR":
+		return escpos.BarcodeTypeCODABAR
+	case "CODE128":
+		return escpos.BarcodeTypeCODE128
+	case "CODE39":
+		return escpos.BarcodeTypeCODE39
+	case "EAN13":
+		return escpos.BarcodeTypeEAN13
+	case "EAN8":
+		return escpos.BarcodeTypeEAN8
+	case "ITF":
+		return escpos.BarcodeTypeITF
+	case "UPCA":
+		return escpos.BarcodeTypeUPCA
+	case "UPCE":
+		return escpos.BarcodeTypeUPCE
+	}
+	return escpos.BarcodeTypeCODABAR // shits fucked if we are here
+
 }
 
 type DitherMode string
@@ -188,163 +215,4 @@ func (f FontType) ToEscposFont() escpos.Font {
 	default:
 		return escpos.FontA // default
 	}
-}
-
-func (a AlignmentType) ToEscposAlignment() escpos.Alignment {
-	switch a {
-	case AlignLeft:
-		return escpos.AlignLeft
-	case AlignRight:
-		return escpos.AlignRight
-	case AlignCenter:
-		return escpos.AlignCenter
-	default:
-		return escpos.AlignLeft // default
-	}
-}
-
-func (t BarcodeType) ToEscposBarcodeType() escpos.BarcodeType {
-	switch t {
-	case "codabar":
-		return escpos.BarcodeTypeCODABAR
-	case "code128":
-		return escpos.BarcodeTypeCODE128
-	case "code39":
-		return escpos.BarcodeTypeCODE39
-	case "ean13":
-		return escpos.BarcodeTypeEAN13
-	case "ean8":
-		return escpos.BarcodeTypeEAN8
-	case "itf":
-		return escpos.BarcodeTypeITF
-	case "upca":
-		return escpos.BarcodeTypeUPCA
-	case "upce":
-		return escpos.BarcodeTypeUPCE
-	}
-
-	return escpos.BarcodeTypeCODABAR // shits fucked if we are here
-
-}
-
-type Line struct {
-	Type      string        `json:"type"`
-	Content   string        `json:"content"`
-	FontSize  int           `json:"font-size"`
-	Font      FontType      `json:"font"`
-	Alignment AlignmentType `json:"alignment"`
-	Underline bool          `json:"underline"`
-}
-
-// Custom unmarshaling for Line to handle string/number flexibility
-func (l *Line) UnmarshalJSON(data []byte) error {
-	type Alias Line
-	aux := &struct {
-		FontSize  interface{} `json:"font-size"`
-		Underline interface{} `json:"underline"`
-		*Alias
-	}{
-		Alias: (*Alias)(l),
-	}
-
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	// Handle FontSize (can be string or number)
-	switch v := aux.FontSize.(type) {
-	case string:
-		if parsed, err := json.Number(v).Int64(); err == nil {
-			l.FontSize = int(parsed)
-		} else {
-			return fmt.Errorf("invalid font-size: %s", v)
-		}
-	case float64:
-		l.FontSize = int(v)
-	case int:
-		l.FontSize = v
-	}
-
-	// Handle Underline (can be string or boolean)
-	switch v := aux.Underline.(type) {
-	case string:
-		l.Underline = v == "true"
-	case bool:
-		l.Underline = v
-	}
-
-	return nil
-}
-
-type Barcode struct {
-	Type        string      `json:"type"`
-	Code        string      `json:"code"`
-	BarcodeType BarcodeType `json:"barcode_type"`
-}
-
-type QRCode struct {
-	Type string `json:"type"`
-	Code string `json:"code"`
-	Size int    `json:"size"`
-}
-
-type Image struct {
-	Type       string        `json:"type"`
-	Data       string        `json:"data"`
-	Alignment  AlignmentType `json:"alignment"`
-	DitherMode DitherMode    `json:"dither_mode"`
-}
-
-type Text struct {
-	Type      string        `json:"type"`
-	Content   string        `json:"content"`
-	FontSize  int           `json:"font_size"`
-	Font      FontType      `json:"font"`
-	Alignment AlignmentType `json:"alignment"`
-	Underline bool          `json:"underline"`
-}
-
-// Custom unmarshaling for Text to handle string/number flexibility
-func (t *Text) UnmarshalJSON(data []byte) error {
-	type Alias Text
-	aux := &struct {
-		FontSize  interface{} `json:"font_size"`
-		Underline interface{} `json:"underline"`
-		*Alias
-	}{
-		Alias: (*Alias)(t),
-	}
-
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	// Handle FontSize (can be string or number)
-	switch v := aux.FontSize.(type) {
-	case string:
-		if parsed, err := json.Number(v).Int64(); err == nil {
-			t.FontSize = int(parsed)
-		} else {
-			return fmt.Errorf("invalid font_size: %s", v)
-		}
-	case float64:
-		t.FontSize = int(v)
-	case int:
-		t.FontSize = v
-	}
-
-	// Handle Underline (can be string or boolean)
-	switch v := aux.Underline.(type) {
-	case string:
-		t.Underline = v == "true"
-	case bool:
-		t.Underline = v
-	}
-
-	return nil
-}
-
-type Feed struct {
-	Type  string `json:"type"`
-	Lines int    `json:"lines"`
 }

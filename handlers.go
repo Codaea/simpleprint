@@ -8,6 +8,49 @@ import (
 	"github.com/mect/go-escpos"
 )
 
+// Types for receipt items - defined close to where they're used
+type Line struct {
+	Type      string        `json:"type"`
+	Content   string        `json:"content"`
+	FontSize  int           `json:"font_size"`
+	Font      FontType      `json:"font"`
+	Alignment AlignmentType `json:"alignment"`
+	Underline bool          `json:"underline"`
+}
+
+type Text struct {
+	Type      string        `json:"type"`
+	Content   string        `json:"content"`
+	FontSize  int           `json:"font_size"`
+	Font      FontType      `json:"font"`
+	Alignment AlignmentType `json:"alignment"`
+	Underline bool          `json:"underline"`
+}
+
+type Feed struct {
+	Type  string `json:"type"`
+	Lines int    `json:"lines"`
+}
+
+type Barcode struct {
+	Type        string      `json:"type"`
+	Code        string      `json:"code"`
+	BarcodeType BarcodeType `json:"barcode_type"`
+}
+
+type QRCode struct {
+	Type string `json:"type"`
+	Code string `json:"code"`
+	Size int    `json:"size"`
+}
+
+type Image struct {
+	Type       string        `json:"type"`
+	Data       string        `json:"data"`
+	Alignment  AlignmentType `json:"alignment"`
+	DitherMode DitherMode    `json:"dither_mode"`
+}
+
 // Global mutex to serialize printer access
 var printerMutex sync.Mutex
 

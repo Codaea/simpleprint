@@ -67,7 +67,7 @@ http://localhost:5010
     {
       "type": "line",
       "content": "Restaurant Name",
-      "font-size": 4,
+      "font_size": 4,
       "font": "A",
       "alignment": "center",
       "underline": false
@@ -93,7 +93,7 @@ Prints a single line of text with formatting options.
 {
   "type": "line",
   "content": "Hello World",
-  "font-size": 2,
+  "font_size": 2,
   "font": "A",
   "alignment": "center",
   "underline": false
@@ -102,7 +102,7 @@ Prints a single line of text with formatting options.
 
 **Parameters:**
 - `content` (string): The text to print
-- `font-size` (integer): Font size multiplier (1-8)
+- `font_size` (integer): Font size multiplier (1-8)
 - `font` (string): Font type - `"A"`, `"B"`, or `"C"`
 - `alignment` (string): Text alignment - `"left"`, `"center"`, or `"right"`
 - `underline` (boolean): Whether to underline the text
@@ -115,7 +115,7 @@ Prints text that can span multiple lines (supports `\n` newlines).
 {
   "type": "text",
   "content": "Multi-line text\nwith newlines\nSupported here",
-  "font-size": 1,
+  "font_size": 1,
   "font": "A",
   "alignment": "left",
   "underline": false
@@ -162,13 +162,13 @@ Prints a barcode with the specified data and format.
 {
   "type": "barcode",
   "code": "123456789012",
-  "barcode-type": "CODE128"
+  "barcode_type": "CODE128"
 }
 ```
 
 **Parameters:**
 - `code` (string): The data to encode in the barcode
-- `barcode-type` (string): Barcode format - `"UPCA"`, `"UPCE"`, `"EAN13"`, `"EAN8"`, `"CODE39"`, or `"CODE128"`
+- `barcode_type` (string): Barcode format - `"UPCA"`, `"UPCE"`, `"EAN13"`, `"EAN8"`, `"CODE39"`, or `"CODE128"`
 
 ### Image (`image`)
 
@@ -225,7 +225,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
     {
       "type": "line",
       "content": "RECEIPT",
-      "font-size": 4,
+      "font_size": 4,
       "font": "A",
       "alignment": "center",
       "underline": true
@@ -237,7 +237,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
     {
       "type": "line",
       "content": "Coffee Shop",
-      "font-size": 2,
+      "font_size": 2,
       "font": "A",
       "alignment": "center",
       "underline": false
@@ -245,7 +245,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
     {
       "type": "line",
       "content": "123 Main St, City",
-      "font-size": 1,
+      "font_size": 1,
       "font": "A",
       "alignment": "center",
       "underline": false
@@ -257,7 +257,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
     {
       "type": "text",
       "content": "Order #12345\nDate: 2025-08-20\nTime: 14:30",
-      "font-size": 1,
+      "font_size": 1,
       "font": "A",
       "alignment": "left",
       "underline": false
@@ -269,7 +269,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
     {
       "type": "line",
       "content": "--------------------------------",
-      "font-size": 1,
+      "font_size": 1,
       "font": "A",
       "alignment": "center",
       "underline": false
@@ -277,7 +277,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
     {
       "type": "text",
       "content": "1x Latte         $4.50\n1x Croissant     $3.25\nTax              $0.62",
-      "font-size": 1,
+      "font_size": 1,
       "font": "A",
       "alignment": "left",
       "underline": false
@@ -285,7 +285,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
     {
       "type": "line",
       "content": "--------------------------------",
-      "font-size": 1,
+      "font_size": 1,
       "font": "A",
       "alignment": "center",
       "underline": false
@@ -293,7 +293,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
     {
       "type": "line",
       "content": "TOTAL: $8.37",
-      "font-size": 2,
+      "font_size": 2,
       "font": "A",
       "alignment": "center",
       "underline": false
@@ -314,7 +314,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
     {
       "type": "line",
       "content": "Thank you for your visit!",
-      "font-size": 1,
+      "font_size": 1,
       "font": "A",
       "alignment": "center",
       "underline": false
@@ -333,7 +333,7 @@ curl -X POST http://localhost:5010/print \
       {
         "type": "line",
         "content": "Hello World!",
-        "font-size": 2,
+        "font_size": 2,
         "font": "A",
         "alignment": "center",
         "underline": false
