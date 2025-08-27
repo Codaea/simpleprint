@@ -6,7 +6,6 @@ import (
 	"image"
 	"image/color"
 	"image/png"
-	"log"
 	"os"
 	"strings"
 
@@ -19,10 +18,7 @@ import (
 
 func main() {
 
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	_ = godotenv.Overload(".env")
 
 	// printer setup
 	printerPath, found := os.LookupEnv("PRINTER_PATH")

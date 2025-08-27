@@ -1,0 +1,14 @@
+[Unit]
+Description=Thermal Printer Server
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=coda
+ExecStart=/home/coda/simpleprint/simpleprint
+EnvironmentFile=/home/coda/simpleprint/.env
+
+[Install]
+WantedBy=multi-user.target
