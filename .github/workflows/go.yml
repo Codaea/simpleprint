@@ -1,0 +1,31 @@
+# Build for raspberry pi
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
+
+name: Build and upload for raspberry pi 0 w v1 
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+   
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22' # Specify your desired Go version
+      - name: Build for linux/armV6
+        env:
+          CGO_ENABLED: 0
+          GOOS: linux
+          GOARCH: arm
+          GOARM: 6
+        run: go build -o simpleprint_linux_arm6
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Releases
+          path: simpleprint_linux_arm6
