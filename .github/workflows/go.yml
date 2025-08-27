@@ -1,7 +1,6 @@
-# Build for raspberry pi
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-go
 
-name: Build and upload for raspberry pi 0 w v1 
+name: Build and upload for all platforms
 
 on:
   push:
@@ -25,7 +24,42 @@ jobs:
           GOARCH: arm
           GOARM: 6
         run: go build -o simpleprint_linux_arm6
+      - name: Build for linux/armV7
+        env:
+          CGO_ENABLED: 0
+          GOOS: linux
+          GOARCH: arm
+          GOARM: 7
+        run: go build -o simpleprint_linux_arm7
+      - name: Build for linux/amd64
+        env:
+          CGO_ENABLED: 0
+          GOOS: linux
+          GOARCH: amd64
+        run: go build -o simpleprint_linux_amd64
+      - name: Build for macos
+        env:
+          CGO_ENABLED: 0
+          GOOS: darwin
+          GOARCH: amd64
+        run: go build -o simpleprint_darwin_amd64
+      - name: Build for windows
+        env:
+          CGO_ENABLED: 0
+          GOOS: windows
+          GOARCH: amd64
+        run: go build -o simpleprint_windows_amd64
+
       - uses: actions/upload-artifact@v4
         with:
           name: Releases
           path: simpleprint_linux_arm6
+      - name: Upload release 
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            simpleprint_linux_arm6
+            simpleprint_linux_arm7
+            simpleprint_linux_amd64
+            simpleprint_darwin_amd64
+            simpleprint_windows_amd64
