@@ -2,6 +2,9 @@
 
 name: Build and upload for all platforms
 
+permissions:
+  contents: write
+
 on:
   push:
     branches: [ "main" ]
