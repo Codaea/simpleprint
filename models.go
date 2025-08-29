@@ -1,8 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"image/png"
+	"strings"
 
 	"github.com/mect/go-escpos"
 )
@@ -181,26 +185,37 @@ func (t BarcodeType) ToEscposBarcodeType() escpos.BarcodeType {
 
 }
 
-type DitherMode string
+func (i *Image) UnmarshalJSON(data []byte) error {
+	var aux struct {
+		Data       string        `json:"data"`
+		DitherMode string        `json:"dither_mode"`
+		Alignment  AlignmentType `json:"alignment"`
+	}
 
-const (
-	None           DitherMode = "none"
-	FloydSteinberg DitherMode = "floydsteinberg"
-)
-
-func (d *DitherMode) UnmarshalJSON(data []byte) error {
-	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+	if err := json.Unmarshal(data, &aux); err != nil {
 		return err
 	}
 
-	switch s {
-	case "none", "floydsteinberg":
-		*d = DitherMode(s)
-		return nil
-	default:
-		return fmt.Errorf("invalid dither mode: %s", s)
+	i.Data = aux.Data
+	i.DitherMode = strings.ToLower(aux.DitherMode)
+	i.Alignment = aux.Alignment
+
+	b64 := aux.Data
+	if after, ok := strings.CutPrefix(b64, "data:image/png;base64,"); ok {
+		b64 = after
 	}
+	decoded, err := base64.StdEncoding.DecodeString(b64)
+	if err != nil {
+		return err
+	}
+	img, err := png.Decode(bytes.NewReader(decoded))
+	if err != nil {
+		return err
+	}
+
+	i.img = img
+	return nil
+
 }
 
 // Helper functions to convert custom types to escpos types

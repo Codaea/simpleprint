@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"image"
 	"sync"
 
 	"github.com/gin-gonic/gin"
@@ -48,7 +49,8 @@ type Image struct {
 	Type       string        `json:"type"`
 	Data       string        `json:"data"`
 	Alignment  AlignmentType `json:"alignment"`
-	DitherMode DitherMode    `json:"dither_mode"`
+	DitherMode string        `json:"dither_mode"`
+	img        image.Image   // decoded image, not directly unmarshaled
 }
 
 // Global mutex to serialize printer access
@@ -107,6 +109,7 @@ func handlePrint(c *gin.Context) {
 			p.QR(v.Code, v.Size)
 		case Image:
 			// Print image (you'll need to decode base64 and process)
+			p.Align(v.Alignment.ToEscposAlignment())
 			p.Image(processImage(v))
 		}
 	}

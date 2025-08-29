@@ -1,13 +1,10 @@
 package main
 
 import (
-	"encoding/base64"
 	"fmt"
 	"image"
 	"image/color"
-	"image/png"
 	"os"
-	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -50,32 +47,24 @@ func main() {
 	router.Run() // listen and serve on 0.0.0.0:8080 (or whatever is set as PORT environment variable)
 }
 
-func processImage(image Image) image.Image {
+func processImage(i Image) image.Image {
 
 	palette := []color.Color{
 		color.Black, color.White,
 	}
-
 	d := dither.NewDitherer(palette)
 
-	reader := base64.NewDecoder(base64.StdEncoding, strings.NewReader(image.Data))
-	img, err := png.Decode(reader)
-	if err != nil {
-		fmt.Printf("failed to decode image: %v", err)
-		return nil
-	}
-
-	// Create a new image from the decoded data
-
 	// Apply dither mode if specified
-	switch image.DitherMode {
-	case FloydSteinberg:
+	switch i.DitherMode {
+	case "floydsteinberg":
 		d.Matrix = dither.FloydSteinberg
-	case None:
-		return img // No dithering, return original image
+		return d.Dither(i.img)
+	case "none":
+		return i.img
+	default:
+		return i.img
 	}
 
-	return d.Dither(img)
 }
 
 /*

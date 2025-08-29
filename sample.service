@@ -6,8 +6,8 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-User=coda
-ExecStart=/home/coda/simpleprint/simpleprint
+User=root
+ExecStart=/usr/bin/simpleprint
 EnvironmentFile=/home/coda/simpleprint/.env
 
 [Install]

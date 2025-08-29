@@ -179,7 +179,7 @@ Prints an image from base64-encoded data.
   "type": "image",
   "data": "data:image/png;base64,iVBORw0KGgoAAAANSU...",
   "alignment": "center",
-  "dither-mode": "floydsteinberg"
+  "dither_mode": "floydsteinberg"
 }
 ```
 
