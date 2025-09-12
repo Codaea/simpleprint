@@ -17,7 +17,14 @@ A lightweight HTTP API server for thermal receipt printers using ESC/POS protoco
 - Go 1.23.5 or later
 - ESC/POS compatible thermal printer connected via USB
 
+### New! Install via script! (only on linux)
+
+```bash
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/codaea/simpleprint/main/install.sh)"
+```
+
 ### Build from Source
+
 
 ```bash
 git clone https://github.com/codaea/simpleprint.git
