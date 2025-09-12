@@ -6,7 +6,7 @@ REPO="codaea/simpleprint"
 SERVICE_NAME="simpleprint"
 INSTALL_DIR="/usr/bin"
 SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
-WORK_DIR="/tmp/simpleprint"
+WORK_DIR="$HOME/.simpleprint"
 
 # Detect architecture
 ARCH=$(uname -m)
