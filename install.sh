@@ -71,19 +71,20 @@ sudo systemctl restart "$SERVICE_NAME"
 
 # Ensure .env file exists in /home/coda/simpleprint
 
-# Use ~/.simpleprint/.env for environment
-ENV_DIR="$HOME/.simpleprint"
+
+# Use /etc/simpleprint/.env for environment
+ENV_DIR="/etc/simpleprint"
 ENV_FILE="$ENV_DIR/.env"
 if [ ! -d "$ENV_DIR" ]; then
-	mkdir -p "$ENV_DIR"
+	sudo mkdir -p "$ENV_DIR"
 fi
 if [ ! -f "$ENV_FILE" ]; then
 	echo ".env not found in $ENV_DIR. Creating a default .env file..."
 	RAW_ENV_URL="https://raw.githubusercontent.com/${REPO}/${TAG}/lib/example.env"
 	if curl --output /dev/null --silent --head --fail "$RAW_ENV_URL"; then
-		curl -L "$RAW_ENV_URL" -o "$ENV_FILE"
+		sudo curl -L "$RAW_ENV_URL" -o "$ENV_FILE"
 	else
-		cat <<EOF > "$ENV_FILE"
+		sudo tee "$ENV_FILE" > /dev/null <<EOF
 # Default environment for simpleprint
 PRINTER_DEVICE=/dev/usb/lp0
 LOG_LEVEL=info
