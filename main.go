@@ -59,6 +59,12 @@ func processImage(i Image) image.Image {
 	case "floydsteinberg":
 		d.Matrix = dither.FloydSteinberg
 		return d.Dither(i.img)
+	case "atkinson":
+		d.Matrix = dither.Atkinson
+		return d.Dither(i.img)
+	case "burkes":
+		d.Matrix = dither.Burkes
+		return d.Dither(i.img)
 	case "none":
 		return i.img
 	default:

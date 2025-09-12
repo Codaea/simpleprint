@@ -186,7 +186,7 @@ Prints an image from base64-encoded data.
 **Parameters:**
 - `data` (string): Base64-encoded image data (PNG format recommended)
 - `alignment` (string): Image alignment - `"left"`, `"center"`, or `"right"`
-- `dither-mode` (string): Dithering algorithm - `"none"` or `"floydsteinberg"`
+- `dither-mode` (string): Dithering algorithm - `"floydsteinberg"`, `"atkinson"`, `"burkes"`, and `"none"`.
 
 ## Response Codes
 
