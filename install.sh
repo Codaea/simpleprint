@@ -53,7 +53,11 @@ sudo mv "$TMP_BIN" "$INSTALL_DIR/$SERVICE_NAME"
 sudo chmod +x "$INSTALL_DIR/$SERVICE_NAME"
 
 # Ensure service file exists, download if missing
+
 SERVICE_SRC="$WORK_DIR/sample.service"
+if [ ! -d "$WORK_DIR" ]; then
+	mkdir -p "$WORK_DIR"
+fi
 if [ ! -f "$SERVICE_SRC" ]; then
 	echo "sample.service not found locally. Downloading from GitHub..."
 	RAW_URL="https://raw.githubusercontent.com/${REPO}/${TAG}/sample.service"
