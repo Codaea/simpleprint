@@ -20,6 +20,9 @@ case "$ARCH" in
 	armv7l)
 		ARCH=armv7
 		;;
+    armv6l)
+        ARCH=armv6
+        ;;
 	*)
 		echo "Unsupported architecture: $ARCH"
 		exit 1
