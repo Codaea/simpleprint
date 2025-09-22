@@ -75,45 +75,51 @@ func handlePrint(c *gin.Context) {
 		return
 	}
 	fmt.Println(req.Receipt)
+	fmt.Printf("Printing %d copies\n", req.Quantity)
 
-	// Process each receipt item
-	for _, item := range req.Receipt {
-		fmt.Printf("Printing Line %v\n", item)
-		switch v := item.(type) {
-		case Line:
-			// Print line
-			p.Font(v.Font.ToEscposFont())
-			p.Align(v.Alignment.ToEscposAlignment())
-			p.Size(uint8(v.FontSize), uint8(v.FontSize))
-			p.Underline(v.Underline)
-			p.PrintLn(v.Content)
-		case Text:
-			// Print text (similar to line)
-			p.Font(v.Font.ToEscposFont())
-			p.Align(v.Alignment.ToEscposAlignment())
-			p.Size(uint8(v.FontSize), uint8(v.FontSize))
-			p.Underline(v.Underline)
-			p.Print(v.Content)
-		case Feed:
-			// Feed lines
-			p.Feed(v.Lines)
-		case Barcode:
-			p.Align(escpos.AlignCenter)
-			err := p.Barcode(v.Code, v.BarcodeType.ToEscposBarcodeType())
-			if err != nil {
-				fmt.Printf("Error printing barcode: %v\n", err)
+	// Print the specified number of copies
+	for copy := 0; copy < req.Quantity; copy++ {
+		fmt.Printf("Printing copy %d of %d\n", copy+1, req.Quantity)
+		
+		// Process each receipt item
+		for _, item := range req.Receipt {
+			fmt.Printf("Printing Line %v\n", item)
+			switch v := item.(type) {
+			case Line:
+				// Print line
+				p.Font(v.Font.ToEscposFont())
+				p.Align(v.Alignment.ToEscposAlignment())
+				p.Size(uint8(v.FontSize), uint8(v.FontSize))
+				p.Underline(v.Underline)
+				p.PrintLn(v.Content)
+			case Text:
+				// Print text (similar to line)
+				p.Font(v.Font.ToEscposFont())
+				p.Align(v.Alignment.ToEscposAlignment())
+				p.Size(uint8(v.FontSize), uint8(v.FontSize))
+				p.Underline(v.Underline)
+				p.Print(v.Content)
+			case Feed:
+				// Feed lines
+				p.Feed(v.Lines)
+			case Barcode:
+				p.Align(escpos.AlignCenter)
+				err := p.Barcode(v.Code, v.BarcodeType.ToEscposBarcodeType())
+				if err != nil {
+					fmt.Printf("Error printing barcode: %v\n", err)
+				}
+			case QRCode:
+				// Print QR code
+				p.Align(escpos.AlignCenter)
+				p.QR(v.Code, v.Size)
+			case Image:
+				// Print image (you'll need to decode base64 and process)
+				p.Align(v.Alignment.ToEscposAlignment())
+				p.Image(processImage(v))
 			}
-		case QRCode:
-			// Print QR code
-			p.Align(escpos.AlignCenter)
-			p.QR(v.Code, v.Size)
-		case Image:
-			// Print image (you'll need to decode base64 and process)
-			p.Align(v.Alignment.ToEscposAlignment())
-			p.Image(processImage(v))
 		}
-	}
 
-	p.Cut()
+		p.Cut()
+	}
 	c.JSON(200, gin.H{"success": true})
 }
