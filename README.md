@@ -70,6 +70,7 @@ http://localhost:5010
 **Request Body:**
 ```json
 {
+  "quantity": 2,
   "receipt": [
     {
       "type": "line",
@@ -88,7 +89,9 @@ http://localhost:5010
 }
 ```
 
-The `receipt` field is an array of print command objects. Each command represents a different element to print.
+**Parameters:**
+- `quantity` (integer, optional): Number of copies to print. Defaults to 1 if not specified.
+- `receipt` (array): Array of print command objects. Each command represents a different element to print.
 
 ## Print Command Types
 
@@ -228,6 +231,7 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
 
 ```json
 {
+  "quantity": 1,
   "receipt": [
     {
       "type": "line",

@@ -12,7 +12,8 @@ import (
 )
 
 type PrintRequest struct {
-	Receipt []ReceiptItem `json:"receipt"`
+	Receipt  []ReceiptItem `json:"receipt"`
+	Quantity int           `json:"quantity,omitempty"`
 }
 
 // ReceiptItem represents any type of item that can appear on a receipt
@@ -27,11 +28,18 @@ type RawReceiptItem struct {
 // Custom unmarshaling for PrintRequest
 func (pr *PrintRequest) UnmarshalJSON(data []byte) error {
 	var raw struct {
-		Receipt []json.RawMessage `json:"receipt"`
+		Receipt  []json.RawMessage `json:"receipt"`
+		Quantity int               `json:"quantity,omitempty"`
 	}
 
 	if err := json.Unmarshal(data, &raw); err != nil {
 		return err
+	}
+
+	// Set quantity with default value of 1 if not specified
+	pr.Quantity = raw.Quantity
+	if pr.Quantity <= 0 {
+		pr.Quantity = 1
 	}
 
 	pr.Receipt = make([]ReceiptItem, len(raw.Receipt))
