@@ -62,8 +62,41 @@ func processImage(i Image) image.Image {
 	case "atkinson":
 		d.Matrix = dither.Atkinson
 		return d.Dither(i.img)
+	case "clustereddot8x8":
+		d.Mapper = dither.PixelMapperFromMatrix(dither.ClusteredDot8x8, 0.5)
+		return d.Dither(i.img)
+	case "clustereddot4x4":
+		d.Mapper = dither.PixelMapperFromMatrix(dither.ClusteredDot4x4, 0.5)
+		return d.Dither(i.img)
+	case "clustereddot6x6":
+		d.Mapper = dither.PixelMapperFromMatrix(dither.ClusteredDot6x6, 0.5)
+		return d.Dither(i.img)
 	case "burkes":
 		d.Matrix = dither.Burkes
+		return d.Dither(i.img)
+	case "jarvisjudiceninke":
+		d.Matrix = dither.JarvisJudiceNinke
+		return d.Dither(i.img)
+	case "sierra":
+		d.Matrix = dither.Sierra
+		return d.Dither(i.img)
+	case "sierralite":
+		d.Matrix = dither.SierraLite
+		return d.Dither(i.img)
+	case "stucki":
+		d.Matrix = dither.Stucki
+		return d.Dither(i.img)
+	case "stevenpigeon":
+		d.Matrix = dither.StevenPigeon
+		return d.Dither(i.img)
+	case "simple2d":
+		d.Matrix = dither.Simple2D
+		return d.Dither(i.img)
+	case "tworowsierra":
+		d.Matrix = dither.TwoRowSierra
+		return d.Dither(i.img)
+	case "falsefloydsteinberg":
+		d.Matrix = dither.FalseFloydSteinberg
 		return d.Dither(i.img)
 	case "none":
 		return i.img
