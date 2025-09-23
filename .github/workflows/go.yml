@@ -39,6 +39,12 @@ jobs:
           GOOS: linux
           GOARCH: amd64
         run: go build -o simpleprint_linux_amd64
+      - name: Build for linux/arm64
+        env:
+          CGO_ENABLED: 0
+          GOOS: linux
+          GOARCH: arm64
+        run: go build -o simpleprint_linux_arm64
       - name: Build for macos
         env:
           CGO_ENABLED: 0
