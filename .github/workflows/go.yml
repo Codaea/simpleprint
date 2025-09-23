@@ -69,5 +69,6 @@ jobs:
             simpleprint_linux_arm6
             simpleprint_linux_arm7
             simpleprint_linux_amd64
+            simpleprint_linux_arm64
             simpleprint_darwin_amd64
             simpleprint_windows_amd64
