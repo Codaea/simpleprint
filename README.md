@@ -196,7 +196,36 @@ Prints an image from base64-encoded data.
 **Parameters:**
 - `data` (string): Base64-encoded image data (PNG format recommended)
 - `alignment` (string): Image alignment - `"left"`, `"center"`, or `"right"`
-- `dither-mode` (string): Dithering algorithm - `"floydsteinberg"`, `"atkinson"`, `"burkes"`, and `"none"`.
+- `dither_mode` (string): Dithering algorithm to apply to the image. Available options:
+  - **Error Diffusion Algorithms:**
+    - `"floydsteinberg"` - Floyd-Steinberg dithering (classic, good general purpose)
+    - `"atkinson"` - Atkinson dithering (popular in retro Mac applications)
+    - `"burkes"` - Burkes dithering (reduces artifacts)
+    - `"jarvisjudiceninke"` - Jarvis-Judice-Ninke dithering (high quality, more processing)
+    - `"sierra"` - Sierra dithering (good balance of quality and speed)
+    - `"sierralite"` - Sierra Lite dithering (faster version of Sierra)
+    - `"stucki"` - Stucki dithering (high quality, similar to Jarvis-Judice-Ninke)
+    - `"stevenpigeon"` - Steven Pigeon dithering (experimental algorithm)
+    - `"simple2d"` - Simple 2D dithering (basic algorithm)
+    - `"tworowsierra"` - Two Row Sierra dithering (variation of Sierra)
+    - `"falsefloydsteinberg"` - False Floyd-Steinberg (simplified version)
+  - **Ordered Dithering Algorithms:**
+    - `"clustereddot4x4"` - 4x4 clustered dot pattern (creates dot patterns)
+    - `"clustereddot6x6"` - 6x6 clustered dot pattern (finer dot patterns)
+    - `"clustereddot8x8"` - 8x8 clustered dot pattern (finest dot patterns)
+  - **No Dithering:**
+    - `"none"` - No dithering applied (direct conversion to black/white)
+
+### About Dithering
+
+Dithering is a technique used to convert grayscale or color images to black and white (monochrome) for thermal printers. Since thermal printers can only print black dots, dithering algorithms determine how to represent different shades of gray using patterns of black and white pixels.
+
+**When to use different algorithms:**
+- **Floyd-Steinberg** - Best general-purpose choice, good for most images
+- **Atkinson** - Great for images with fine details and text
+- **Sierra/Stucki** - Excellent for photographs and smooth gradients
+- **Ordered dithering (ClusteredDot)** - Best for images that should maintain a "halftone" newspaper-like appearance
+- **None** - Use when you want sharp, high-contrast black and white conversion
 
 ## Response Codes
 
@@ -317,6 +346,16 @@ Here's a complete example that demonstrates printing a receipt with multiple ele
       "type": "qr",
       "code": "https://coffeeshop.com/receipt/12345",
       "size": 6
+    },
+    {
+      "type": "feed",
+      "lines": 1
+    },
+    {
+      "type": "image",
+      "data": "data:image/png;base64,iVBORw0KGgoAAAANSU...",
+      "alignment": "center",
+      "dither_mode": "sierra"
     },
     {
       "type": "feed",
